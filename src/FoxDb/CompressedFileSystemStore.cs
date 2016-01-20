@@ -23,7 +23,7 @@ namespace FoxDb
 
         public override Stream OpenWrite()
         {
-            return new GZipStream(base.OpenWrite(), CompressionLevel.Optimal, false);
+            return new GZipStream(base.OpenWrite(), CompressionLevel.Fastest, false);
         }
 
     }
