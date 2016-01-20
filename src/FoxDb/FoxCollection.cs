@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FoxDb
 {
@@ -12,6 +8,7 @@ namespace FoxDb
 
         private readonly ISerializationStrategy _serializationStrategy;
         private readonly List<object> _items;
+        private readonly object _syncRoot = new object();
 
         public int Count => _items.Count;
         public bool IsReadOnly => false;
@@ -22,39 +19,65 @@ namespace FoxDb
             _items = _serializationStrategy.Deserialize<List<object>>() ?? new List<object>();
         }
 
+        public void Save()
+        {
+            _serializationStrategy.Serialize(_items);
+        }
+
         IEnumerator<object> IEnumerable<object>.GetEnumerator()
         {
-            return _items.GetEnumerator();
+            lock (_syncRoot)
+            {
+                return _items.GetEnumerator();
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return _items.GetEnumerator();
+            lock (_syncRoot)
+            {
+                return _items.GetEnumerator();
+            }
         }
 
         public void Add(object item)
         {
-            _items.Add(item);
+            lock (_syncRoot)
+            {
+                _items.Add(item);
+            }
         }
 
         public void Clear()
         {
-            _items.Clear();
+            lock (_syncRoot)
+            {
+                _items.Clear();
+            }
         }
 
         public bool Contains(object item)
         {
-            return _items.Contains(item);
+            lock (_syncRoot)
+            {
+                return _items.Contains(item);
+            }
         }
 
         void ICollection<object>.CopyTo(object[] array, int arrayIndex)
         {
-            _items.CopyTo(array, arrayIndex);
+            lock (_syncRoot)
+            {
+                _items.CopyTo(array, arrayIndex);
+            }
         }
 
         public bool Remove(object item)
         {
-            return _items.Remove(item);
+            lock (_syncRoot)
+            {
+                return _items.Remove(item);
+            }
         }
 
     }

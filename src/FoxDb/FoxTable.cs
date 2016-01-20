@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Xml.Linq;
 
 namespace FoxDb
 {
@@ -10,6 +9,7 @@ namespace FoxDb
 
         private readonly ISerializationStrategy _serializationStrategy;
         private readonly Dictionary<string, object> _items;
+        private readonly object _syncRoot = new object();
 
         public int Count => _items.Count;
         public bool IsReadOnly => false;
@@ -18,8 +18,20 @@ namespace FoxDb
 
         public object this[string key]
         {
-            get { return _items[key]; }
-            set { _items[key] = value; }
+            get
+            {
+                lock (_syncRoot)
+                {
+                    return _items[key];
+                }
+            }
+            set
+            {
+                lock (_syncRoot)
+                {
+                    _items[key] = value;
+                }
+            }
         }
 
         public FoxTable(ISerializationStrategy serializationStrategy)
@@ -30,27 +42,39 @@ namespace FoxDb
 
         public void Save()
         {
-            _serializationStrategy.Serialize(_items);
+            lock (_syncRoot)
+            {
+                _serializationStrategy.Serialize(_items);
+            }
         }
 
         public void Add(KeyValuePair<string, object> item)
         {
-            _items.Add(item.Key, item.Value);
+            lock (_syncRoot)
+            {
+                _items.Add(item.Key, item.Value);
+            }
         }
 
         public void Clear()
         {
-            _items.Clear();
+            lock (_syncRoot)
+            {
+                _items.Clear();
+            }
         }
 
         bool ICollection<KeyValuePair<string, object>>.Contains(KeyValuePair<string, object> keyValuePair)
         {
-            if (!_items.ContainsKey(keyValuePair.Key))
-                return false;
-
-            if (EqualityComparer<object>.Default.Equals(_items[keyValuePair.Key], keyValuePair.Value))
+            lock (_syncRoot)
             {
-                return true;
+                if (!_items.ContainsKey(keyValuePair.Key))
+                    return false;
+
+                if (EqualityComparer<object>.Default.Equals(_items[keyValuePair.Key], keyValuePair.Value))
+                {
+                    return true;
+                }
             }
 
             return false;
@@ -67,52 +91,75 @@ namespace FoxDb
             if (array.Length - arrayIndex < Count)
                 throw new ArgumentException("Array too small", nameof(array));
 
-            foreach (var entry in _items)
+            lock (_syncRoot)
             {
-                if (entry.GetHashCode() >= 0)
+                foreach (var entry in _items)
                 {
-                    array[arrayIndex++] = new KeyValuePair<string, object>(entry.Key, entry.Value);
+                    if (entry.GetHashCode() >= 0)
+                    {
+                        array[arrayIndex++] = new KeyValuePair<string, object>(entry.Key, entry.Value);
+                    }
                 }
             }
         }
 
         bool ICollection<KeyValuePair<string, object>>.Remove(KeyValuePair<string, object> item)
         {
-            if (_items.ContainsKey(item.Key))
-                return _items.Remove(item.Key);
+            lock (_syncRoot)
+            {
+                if (_items.ContainsKey(item.Key))
+                    return _items.Remove(item.Key);
+            }
 
             return false;
         }
 
         IEnumerator<KeyValuePair<string, object>> IEnumerable<KeyValuePair<string, object>>.GetEnumerator()
         {
-            return _items.GetEnumerator();
+            lock (_syncRoot)
+            {
+                return _items.GetEnumerator();
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return _items.GetEnumerator();
+            lock (_syncRoot)
+            {
+                return _items.GetEnumerator();
+            }
         }
 
         public bool ContainsKey(string key)
         {
-            return _items.ContainsKey(key);
+            lock (_syncRoot)
+            {
+                return _items.ContainsKey(key);
+            }
         }
 
         public void Add(string key, object value)
         {
-            _items.Add(key, value);
+            lock (_syncRoot)
+            {
+                _items.Add(key, value);
+            }
         }
 
         public bool Remove(string key)
         {
-            return _items.Remove(key);
+            lock (_syncRoot)
+            {
+                return _items.Remove(key);
+            }
         }
 
         public bool TryGetValue(string key, out object value)
         {
-            return _items.TryGetValue(key, out value);
+            lock (_syncRoot)
+            {
+                return _items.TryGetValue(key, out value);
+            }
         }
-
     }
 }
