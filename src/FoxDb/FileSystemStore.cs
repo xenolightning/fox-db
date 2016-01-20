@@ -11,12 +11,12 @@ namespace FoxDb
             _filePath = filePath;
         }
 
-        public virtual Stream OpenRead()
+        public Stream OpenRead()
         {
             return File.Open(_filePath, FileMode.OpenOrCreate, FileAccess.Read, FileShare.Read);
         }
 
-        public virtual Stream OpenWrite()
+        public Stream OpenWrite()
         {
             return File.Open(_filePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Write);
         }

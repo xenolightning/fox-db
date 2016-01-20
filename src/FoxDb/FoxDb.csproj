@@ -45,7 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileSystemStore.cs" />
-    <Compile Include="CompressedFileSystemStore.cs" />
+    <Compile Include="CompressedDataStore.cs" />
     <Compile Include="FoxCollection.cs" />
     <Compile Include="FoxTable.cs" />
     <Compile Include="IDataStore.cs" />

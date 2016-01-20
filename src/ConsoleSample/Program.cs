@@ -11,7 +11,7 @@ namespace ConsoleSample
             var sw = new Stopwatch();
 
             var store = new FoxTable(new JsonSerializationStrategy(new FileSystemStore("hello"))); //jit
-            var store2 = new FoxTable(new JsonSerializationStrategy(new CompressedFileSystemStore("hello2"))); //jit
+            var store2 = new FoxTable(new JsonSerializationStrategy(new CompressedDataStore(new FileSystemStore("hello2")))); //jit
 
 
             sw.Restart();
@@ -23,7 +23,7 @@ namespace ConsoleSample
 
             sw.Restart();
             for (int i = 0; i < 1000; i++)
-                store2 = new FoxTable(new JsonSerializationStrategy(new CompressedFileSystemStore("hello2")));
+                store2 = new FoxTable(new JsonSerializationStrategy(new CompressedDataStore(new FileSystemStore("hello2"))));
             sw.Stop();
 
             Console.WriteLine("Compressed Load: {0}", (double)sw.ElapsedMilliseconds / 1000);
