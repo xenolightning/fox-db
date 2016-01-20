@@ -2,7 +2,7 @@
 
 namespace FoxDb
 {
-    public class FileSystemStore :IDataStore 
+    public class FileSystemStore : IDataStore
     {
         private readonly string _filePath;
 
@@ -11,12 +11,12 @@ namespace FoxDb
             _filePath = filePath;
         }
 
-        public Stream OpenRead()
+        public virtual Stream OpenRead()
         {
             return File.Open(_filePath, FileMode.OpenOrCreate, FileAccess.Read, FileShare.Read);
         }
 
-        public Stream OpenWrite()
+        public virtual Stream OpenWrite()
         {
             return File.Open(_filePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Write);
         }
