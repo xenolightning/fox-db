@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace FoxDb.Transactions
 {
@@ -62,6 +64,17 @@ namespace FoxDb.Transactions
 
                 x.Remove(key);
             });
+        }
+
+        public void Delete(Func<T, bool> predicate)
+        {
+            _operations.Add(x =>
+            {
+                foreach (var s in x.Where(kv => predicate(kv.Value)).ToList())
+                {
+                    x.Remove(s.Key);
+                }
+            }); 
         }
 
         public void Commit()

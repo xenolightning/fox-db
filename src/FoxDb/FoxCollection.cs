@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using FoxDb.Transactions;
 
@@ -16,6 +17,8 @@ namespace FoxDb
         public bool IsReadOnly => false;
         public ICollection<string> Keys => _items.Keys;
         public ICollection<T> Values => _items.Values;
+
+        public long Timestamp { get; private set; }
 
         IDictionary<string, T> IFoxTransactionSource<T>.Items
         {
@@ -40,10 +43,27 @@ namespace FoxDb
             _items = _serializationStrategy.Deserialize<Dictionary<string, T>>() ?? new Dictionary<string, T>();
         }
 
+        public IFoxTransaction<T> BeginTransaction()
+        {
+            return new FoxTransaction<T>(this);
+        }
+
+        public T Get(string key)
+        {
+            lock (_syncRoot)
+            {
+                if (_items.ContainsKey(key))
+                    return _items[key];
+            }
+
+            return default(T);
+        }
+
         public void Save()
         {
             lock (_syncRoot)
             {
+                Timestamp = DateTime.Now.AsUnixTimestamp();
                 _serializationStrategy.Serialize(_items);
             }
         }
@@ -60,13 +80,8 @@ namespace FoxDb
         {
             lock (_syncRoot)
             {
-                return _items.GetEnumerator();
+                return _items.Values.GetEnumerator();
             }
-        }
-
-        public IFoxTransaction<T> BeginTransaction()
-        {
-            return new FoxTransaction<T>(this);
         }
     }
 }

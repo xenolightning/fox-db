@@ -196,5 +196,108 @@ namespace FoxDb.Tests
             Assert.True(!keys.Except(collection.Keys).Any() && keys.Count == collection.Keys.Count);
         }
 
+        [Fact]
+        public void Transaction_Cannot_Have_Nested_Transaction()
+        {
+            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+
+            collection.BeginTransaction();
+
+            Assert.ThrowsAny<Exception>(() => collection.BeginTransaction());
+        }
+
+        [Fact]
+        public void Transaction_Can_Update_Record()
+        {
+
+            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            string itemKey;
+
+            using (var tran = collection.BeginTransaction())
+            {
+                itemKey = tran.Insert(1);
+
+                tran.Update(itemKey, 2);
+            }
+
+            Assert.Equal(2, collection.Get(itemKey));
+        }
+
+        [Fact]
+        public void Transaction_Can_Update_Record_Multi_Transaction()
+        {
+
+            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            string itemKey;
+
+            using (var tran = collection.BeginTransaction())
+            {
+                itemKey = tran.Insert(1);
+            }
+
+            Assert.Equal(1, collection.Get(itemKey));
+
+            using (var tran = collection.BeginTransaction())
+            {
+                tran.Update(itemKey, 2);
+            }
+
+            Assert.Equal(2, collection.Get(itemKey));
+        }
+
+        [Fact]
+        public void Transaction_Can_Delete_Record()
+        {
+
+            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            string itemKey;
+
+            using (var tran = collection.BeginTransaction())
+            {
+                itemKey = tran.Insert(1);
+                tran.Delete(itemKey);
+            }
+
+            Assert.Equal(default(int), collection.Get(itemKey));
+            Assert.False(collection.Keys.Contains(itemKey));
+        }
+
+        [Fact]
+        public void Transaction_Can_Delete_Record_Multi_Tran()
+        {
+
+            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            string itemKey;
+
+            using (var tran = collection.BeginTransaction())
+            {
+                itemKey = tran.Insert(1);
+            }
+
+            Assert.Equal(1, collection.Get(itemKey));
+            Assert.True(collection.Keys.Contains(itemKey));
+
+            using (var tran = collection.BeginTransaction())
+            {
+                tran.Delete(itemKey);
+            }
+
+            Assert.Equal(default(int), collection.Get(itemKey));
+            Assert.False(collection.Keys.Contains(itemKey));
+        }
+        [Fact]
+        public void Transaction_Delete_Non_Existent_Item_Throws()
+        {
+
+            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+
+            var tran = collection.BeginTransaction();
+
+            tran.Delete("NON EXISTENT KEY");
+
+            Assert.ThrowsAny<Exception>(() => tran.Commit());
+
+        }
+
     }
 }
