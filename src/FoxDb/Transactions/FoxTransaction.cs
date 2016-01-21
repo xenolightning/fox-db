@@ -1,22 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FoxDb.Transactions
 {
     internal class FoxTransaction<T> : IFoxTransaction<T>
         where T : new()
     {
-        private readonly FoxCollection<T> _collection;
-        private List<Action<Dictionary<string, T>>> _operations;
+        private readonly IFoxTransactionSource<T> _source;
+        private readonly List<Action<Dictionary<string, T>>> _operations;
+        private TransactionState _state;
 
-        public FoxTransaction(FoxCollection<T> collection)
+        public FoxTransaction(IFoxTransactionSource<T> source)
         {
-            _collection = collection;
+            if (source.ActiveTransaction != null)
+                throw new Exception($"Source has an open transaction. Commit or Rollback active transaction before creating another transaction.");
+
+            _source = source;
+            _source.ActiveTransaction = this;
             _operations = new List<Action<Dictionary<string, T>>>();
+
+            _state = TransactionState.Active;
+        }
+
+        public TransactionState State
+        {
+            get
+            {
+                return _state;
+            }
         }
 
         public string Insert(T value)
@@ -36,7 +47,7 @@ namespace FoxDb.Transactions
             _operations.Add(x =>
             {
                 if (!x.ContainsKey(key))
-                    throw new Exception(String.Format("Object with key '{0}' does not exist in table", key));
+                    throw new Exception($"Object with key '{key}' does not exist in table");
 
                 x[key] = value;
             });
@@ -47,7 +58,7 @@ namespace FoxDb.Transactions
             _operations.Add(x =>
             {
                 if (!x.ContainsKey(key))
-                    throw new Exception(String.Format("Object with key '{0}' does not exist in table", key));
+                    throw new Exception($"Object with key '{key}' does not exist in table");
 
                 x.Remove(key);
             });
@@ -55,17 +66,33 @@ namespace FoxDb.Transactions
 
         public void Commit()
         {
-            var itemsCopy = new Dictionary<string, T>(_collection.Items);
-            for (int i = 0; i < _operations.Count; i++)
-            {
-                _operations[i](itemsCopy);
-            }
+            if (_state != TransactionState.Active)
+                throw new Exception(String.Format("Transaction is in an invalid state. Expected {0} but is {1}", TransactionState.Active, _state));
 
-            _collection.Items = itemsCopy;
+            try
+            {
+
+                var itemsCopy = new Dictionary<string, T>(_source.Items);
+                for (int i = 0; i < _operations.Count; i++)
+                {
+                    _operations[i](itemsCopy);
+                }
+
+                _source.Items = itemsCopy;
+                _state = TransactionState.Committed;
+                _source.ActiveTransaction = null;
+            }
+            catch
+            {
+                _state = TransactionState.Aborted;
+                throw;
+            }
         }
 
         public void Rollback()
         {
+            _source.ActiveTransaction = null;
+            _state = TransactionState.Aborted;
         }
 
         public void Dispose()

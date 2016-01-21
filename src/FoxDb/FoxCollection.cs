@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using FoxDb.Transactions;
 
 namespace FoxDb
 {
-    public class FoxCollection<T> : IEnumerable<T>
+    public class FoxCollection<T> : IFoxTransactionSource<T>, IEnumerable<T>
         where T : new()
     {
 
@@ -18,7 +17,7 @@ namespace FoxDb
         public ICollection<string> Keys => _items.Keys;
         public ICollection<T> Values => _items.Values;
 
-        internal Dictionary<string, T> Items
+        IDictionary<string, T> IFoxTransactionSource<T>.Items
         {
             get
             {
@@ -28,10 +27,12 @@ namespace FoxDb
             {
                 lock (_syncRoot)
                 {
-                    _items = value;
+                    _items = new Dictionary<string, T>(value);
                 }
             }
-        } 
+        }
+
+        IFoxTransaction<T> IFoxTransactionSource<T>.ActiveTransaction { get; set; }
 
         public FoxCollection(ISerializationStrategy serializationStrategy)
         {

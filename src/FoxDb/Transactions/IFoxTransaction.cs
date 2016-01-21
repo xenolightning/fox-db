@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace FoxDb.Transactions
 {
-    public interface IFoxTransaction<T> : IDisposable
+    public interface IFoxTransaction<in T> : IDisposable
         where T : new()
     {
+        TransactionState State { get; }
 
         string Insert(T value);
 
@@ -20,5 +21,12 @@ namespace FoxDb.Transactions
 
         void Rollback();
 
+    }
+
+    public enum TransactionState
+    {
+        Active,
+        Committed,
+        Aborted
     }
 }
