@@ -47,17 +47,19 @@
     <Compile Include="FileSystemStore.cs" />
     <Compile Include="CompressedDataStore.cs" />
     <Compile Include="FoxCollection.cs" />
-    <Compile Include="FoxTable.cs" />
     <Compile Include="IDataStore.cs" />
     <Compile Include="ISerializationStrategy.cs" />
     <Compile Include="BsonSerializationStrategy.cs" />
     <Compile Include="JsonSerializationStrategy.cs" />
     <Compile Include="ProxyDataStore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Transactions\FoxTransaction.cs" />
+    <Compile Include="Transactions\IFoxTransaction.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
