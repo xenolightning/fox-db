@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 
 namespace FoxDb.Transactions
 {
@@ -15,7 +14,7 @@ namespace FoxDb.Transactions
         public FoxTransaction(IFoxTransactionSource<T> source)
         {
             if (source.ActiveTransaction != null)
-                throw new Exception($"Source has an open transaction. Commit or Rollback active transaction before creating another transaction.");
+                throw new Exception("Source has an open transaction. Commit or Rollback active transaction before creating another transaction.");
 
             _source = source;
             _source.ActiveTransaction = this;
@@ -24,13 +23,7 @@ namespace FoxDb.Transactions
             _state = TransactionState.Active;
         }
 
-        public TransactionState State
-        {
-            get
-            {
-                return _state;
-            }
-        }
+        public TransactionState State => _state;
 
         public string Insert(T value)
         {
@@ -80,15 +73,15 @@ namespace FoxDb.Transactions
         public void Commit()
         {
             if (_state != TransactionState.Active)
-                throw new Exception(String.Format("Transaction is in an invalid state. Expected {0} but is {1}", TransactionState.Active, _state));
+                throw new Exception($"Transaction is in an invalid state. Expected {TransactionState.Active} but is {_state}");
 
             try
             {
 
                 var itemsCopy = new Dictionary<string, T>(_source.Items);
-                for (int i = 0; i < _operations.Count; i++)
+                foreach (var t in _operations)
                 {
-                    _operations[i](itemsCopy);
+                    t(itemsCopy);
                 }
 
                 _source.Items = itemsCopy;
