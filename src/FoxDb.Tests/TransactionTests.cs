@@ -26,14 +26,49 @@ namespace FoxDb.Tests
         public void Collection_In_Using_Block_Creates_Transaction()
         {
             var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            IFoxTransaction<int> tran;
 
-            using (var tran = collection.BeginTransaction())
+            using (tran = collection.BeginTransaction())
             {
                 Assert.NotNull(tran);
                 Assert.NotNull(((IFoxTransactionSource<int>)collection).ActiveTransaction);
             }
 
             Assert.Null(((IFoxTransactionSource<int>)collection).ActiveTransaction);
+            Assert.Equal(TransactionState.Aborted, tran.State);
+        }
+
+        [Fact]
+        public void Transaction_Dispose_Aborts_Uncommited()
+        {
+            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            IFoxTransaction<int> tran;
+
+            using (tran = collection.BeginTransaction())
+            {
+                Assert.NotNull(tran);
+                Assert.NotNull(((IFoxTransactionSource<int>)collection).ActiveTransaction);
+            }
+
+            Assert.Null(((IFoxTransactionSource<int>)collection).ActiveTransaction);
+            Assert.Equal(TransactionState.Aborted, tran.State);
+        }
+
+        [Fact]
+        public void Transaction_Dispose_After_Commit()
+        {
+            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            IFoxTransaction<int> tran;
+
+            using (tran = collection.BeginTransaction())
+            {
+                Assert.NotNull(tran);
+                Assert.NotNull(((IFoxTransactionSource<int>)collection).ActiveTransaction);
+                tran.Commit();
+            }
+
+            Assert.Null(((IFoxTransactionSource<int>)collection).ActiveTransaction);
+            Assert.Equal(TransactionState.Committed, tran.State);
         }
 
         [Fact]
@@ -82,6 +117,7 @@ namespace FoxDb.Tests
             using (tran = collection.BeginTransaction())
             {
                 tran.Insert(1);
+                tran.Commit();
             }
 
             Assert.Equal(TransactionState.Committed, tran.State);
@@ -173,6 +209,12 @@ namespace FoxDb.Tests
                 tran.Insert(1);
                 tran.Insert(2);
                 tran.Insert(3);
+
+                Assert.DoesNotContain(1, collection);
+                Assert.DoesNotContain(2, collection);
+                Assert.DoesNotContain(3, collection);
+
+                tran.Commit();
             }
 
             Assert.Contains(1, collection);
@@ -191,6 +233,8 @@ namespace FoxDb.Tests
                 keys.Add(tran.Insert(1));
                 keys.Add(tran.Insert(2));
                 keys.Add(tran.Insert(3));
+
+                tran.Commit();
             }
 
             Assert.True(!keys.Except(collection.Keys).Any() && keys.Count == collection.Keys.Count);
@@ -218,6 +262,8 @@ namespace FoxDb.Tests
                 itemKey = tran.Insert(1);
 
                 tran.Update(itemKey, 2);
+
+                tran.Commit();
             }
 
             Assert.Equal(2, collection.Get(itemKey));
@@ -233,6 +279,8 @@ namespace FoxDb.Tests
             using (var tran = collection.BeginTransaction())
             {
                 itemKey = tran.Insert(1);
+
+                tran.Commit();
             }
 
             Assert.Equal(1, collection.Get(itemKey));
@@ -240,6 +288,8 @@ namespace FoxDb.Tests
             using (var tran = collection.BeginTransaction())
             {
                 tran.Update(itemKey, 2);
+
+                tran.Commit();
             }
 
             Assert.Equal(2, collection.Get(itemKey));
@@ -272,6 +322,8 @@ namespace FoxDb.Tests
             using (var tran = collection.BeginTransaction())
             {
                 itemKey = tran.Insert(1);
+
+                tran.Commit();
             }
 
             Assert.Equal(1, collection.Get(itemKey));
@@ -280,6 +332,8 @@ namespace FoxDb.Tests
             using (var tran = collection.BeginTransaction())
             {
                 tran.Delete(itemKey);
+
+                tran.Commit();
             }
 
             Assert.Equal(default(int), collection.Get(itemKey));
