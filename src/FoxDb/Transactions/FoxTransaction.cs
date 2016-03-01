@@ -9,7 +9,12 @@ namespace FoxDb.Transactions
     {
         private readonly IFoxTransactionSource<T> _source;
         private readonly List<Action<Dictionary<string, T>>> _operations;
-        private TransactionState _state;
+
+        public TransactionState State
+        {
+            get;
+            private set;
+        }
 
         public FoxTransaction(IFoxTransactionSource<T> source)
         {
@@ -20,10 +25,8 @@ namespace FoxDb.Transactions
             _source.ActiveTransaction = this;
             _operations = new List<Action<Dictionary<string, T>>>();
 
-            _state = TransactionState.Active;
+            State = TransactionState.Active;
         }
-
-        public TransactionState State => _state;
 
         public string Insert(T value)
         {
@@ -67,30 +70,30 @@ namespace FoxDb.Transactions
                 {
                     x.Remove(s.Key);
                 }
-            }); 
+            });
         }
 
         public void Commit()
         {
-            if (_state != TransactionState.Active)
-                throw new Exception($"Transaction is in an invalid state. Expected {TransactionState.Active} but is {_state}");
+            if (State != TransactionState.Active)
+                throw new Exception($"Transaction is in an invalid state. Expected {TransactionState.Active} but is {State}");
 
             try
             {
-
                 var itemsCopy = new Dictionary<string, T>(_source.Items);
+
                 foreach (var t in _operations)
                 {
                     t(itemsCopy);
                 }
 
-                _source.Items = itemsCopy;
-                _state = TransactionState.Committed;
+                State = TransactionState.Committed;
                 _source.ActiveTransaction = null;
+                _source.Items = itemsCopy;
             }
             catch
             {
-                _state = TransactionState.Aborted;
+                State = TransactionState.Aborted;
                 throw;
             }
         }
@@ -98,12 +101,16 @@ namespace FoxDb.Transactions
         public void Rollback()
         {
             _source.ActiveTransaction = null;
-            _state = TransactionState.Aborted;
+            State = TransactionState.Aborted;
         }
 
         public void Dispose()
         {
-            Commit();
+            if (State == TransactionState.Active)
+                State = TransactionState.Aborted;
+
+            _source.ActiveTransaction = null;
+            _operations.Clear();
         }
     }
 }

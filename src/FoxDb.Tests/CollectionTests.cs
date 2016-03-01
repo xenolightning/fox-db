@@ -16,6 +16,8 @@ namespace FoxDb.Tests
             using (var tran = collection.BeginTransaction())
             {
                 tran.Insert(1);
+
+                tran.Commit();
             }
 
             Assert.Equal(1, collection.Count);
@@ -31,6 +33,8 @@ namespace FoxDb.Tests
             using (var tran = collection.BeginTransaction())
             {
                 tran.Insert(1);
+
+                tran.Commit();
             }
 
             Assert.Equal(1, collection.Count);
@@ -47,6 +51,8 @@ namespace FoxDb.Tests
             using (var tran = collection.BeginTransaction())
             {
                 tran.Insert(1);
+
+                tran.Commit();
             }
 
             Assert.Equal(1, collection.Count);
@@ -54,6 +60,8 @@ namespace FoxDb.Tests
             using (var tran = collection.BeginTransaction())
             {
                 tran.Delete(x => x == 1);
+
+                tran.Commit();
             }
 
             Assert.Equal(0, collection.Count);
