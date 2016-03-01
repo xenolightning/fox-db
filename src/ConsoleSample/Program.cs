@@ -49,29 +49,29 @@ namespace ConsoleSample
 
 
 
-            sw.Restart();
-            for (int i = 0; i < 10000; i++)
-            {
-                var tran = store2.BeginTransaction();
-                try
-                {
+            //sw.Restart();
+            //for (int i = 0; i < 10000; i++)
+            //{
+            //    var tran = store2.BeginTransaction();
+            //    try
+            //    {
 
-                    tran.Insert(new Test1());
-                    tran.Insert(new Test2());
-                    //tran.Update(Guid.NewGuid().ToString(), new Test1());
+            //        tran.Insert(new Test1());
+            //        tran.Insert(new Test2());
+            //        //tran.Update(Guid.NewGuid().ToString(), new Test1());
 
 
-                    tran.Commit();
-                }
-                catch
-                {
-                    tran.Rollback();
-                }
-            }
+            //        tran.Commit();
+            //    }
+            //    catch
+            //    {
+            //        tran.Rollback();
+            //    }
+            //}
 
-            sw.Stop();
+            //sw.Stop();
 
-            Console.WriteLine("Multi Tran: {0}", (double)sw.ElapsedMilliseconds);
+            //Console.WriteLine("Multi Tran: {0}", (double)sw.ElapsedMilliseconds);
 
             store.Save(); //jit
 

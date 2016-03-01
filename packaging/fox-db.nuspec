@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+    <metadata>
+        <id>fox-db</id>
+        <version>1.0.0-alpha1</version>
+        <title>fox-db</title>
+        <authors>xenolightning</authors>
+        <owners>Sean Chapman</owners>
+        <licenseUrl>https://github.com/xenolightning/fox-db/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/xenolightning/fox-db</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Simple, extensible .net object storage using json or whatever other serialization you want
+
+Support for in memory transactions for insert/update/delete</description>
+        <summary>Simple, extensible .net object storage using json/bson etc..</summary>
+        <releaseNotes>- Transactions
+- Json/Bson Serialization
+- File/Compressed storage methods</releaseNotes>
+        <copyright>Sean Chapman</copyright>
+        <tags>.net object persistence storage json bson</tags>
+        <dependencies>
+            <group targetFramework=".NETFramework4.5.2">
+                <dependency id="Newtonsoft.Json" version="8.0.2" />
+            </group>
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="..\bin\Release\FoxDb.dll" target="lib\net452\FoxDb.dll" />
+    </files>
+</package>

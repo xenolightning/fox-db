@@ -7,9 +7,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("FoxDb.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Animal Health Board")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("FoxDb.Tests")]
-[assembly: AssemblyCopyright("Copyright © Animal Health Board 2016")]
+[assembly: AssemblyCopyright("Copyright © 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
