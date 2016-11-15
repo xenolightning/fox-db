@@ -5,7 +5,12 @@ using System.Linq.Expressions;
 
 namespace FoxDb
 {
-    public interface IFoxCollection<T> : IFoxCollection, IQueryable<T>
+    public interface IFoxCollection
+    {
+
+    }
+
+    public interface IFoxCollection<T> : IFoxCollection
         where T : class
     {
 
@@ -18,11 +23,6 @@ namespace FoxDb
         void Delete(Expression<Func<T, bool>> deleteExpression);
 
         int DeleteMany(Expression<Func<T, bool>> deleteExpression);
-
-    }
-
-    public interface IFoxCollection : IQueryable
-    {
 
     }
 }

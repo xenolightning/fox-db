@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace FoxDb
 {
-    public sealed class FoxDatabase : ITransactionCache
+    public sealed class FoxDatabase : ITransactionSource
     {
 
         private readonly Dictionary<string, IFoxCollection> _collections;
@@ -17,28 +17,24 @@ namespace FoxDb
             _collections = new Dictionary<string, IFoxCollection>();
         }
 
-
         public IFoxTransaction BeginTransaction()
         {
             return new FoxTransaction(this);
         }
 
-        public bool CollectionExists<T>(string name) where T : class
+        bool ITransactionSource.CollectionExists<T>(string name)
         {
             return _collectionIndex.ContainsKey(name) && _collectionIndex[name] == typeof(T);
         }
 
-        public IFoxCollection<T> GetCollection<T>(string name) where T : class
+        IFoxCollection<T> ITransactionSource.GetCollection<T>(string name)
+        { 
+            throw new NotImplementedException();
+        }
+
+        void ITransactionSource.Process(IList<ITransactionAction> actions)
         {
             throw new NotImplementedException();
         }
-    }
-
-    internal interface ITransactionCache
-    {
-        bool CollectionExists<T>(string name) where T : class ;
-
-        IFoxCollection<T> GetCollection<T>(string name) where T : class;
-
     }
 }

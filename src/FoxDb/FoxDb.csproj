@@ -30,9 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -45,9 +44,11 @@
     <Compile Include="FoxDatabase.cs" />
     <Compile Include="IDataStore.cs" />
     <Compile Include="IFoxCollection.cs" />
-    <Compile Include="IFoxTransaction.cs" />
+    <Compile Include="Transactions\InsertDocumentAction.cs" />
+    <Compile Include="Transactions\IFoxTransaction.cs" />
     <Compile Include="ISerializationStrategy.cs" />
     <Compile Include="BsonSerializationStrategy.cs" />
+    <Compile Include="ITransactionSource.cs" />
     <Compile Include="JsonSerializationStrategy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
