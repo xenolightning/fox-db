@@ -44,7 +44,9 @@
     <Compile Include="FoxDatabase.cs" />
     <Compile Include="IDataStore.cs" />
     <Compile Include="IFoxCollection.cs" />
-    <Compile Include="Transactions\InsertDocumentAction.cs" />
+    <Compile Include="Transactions\UpdateDocumentCommand.cs" />
+    <Compile Include="Transactions\ITransactionCommand.cs" />
+    <Compile Include="Transactions\InsertDocumentCommand.cs" />
     <Compile Include="Transactions\IFoxTransaction.cs" />
     <Compile Include="ISerializationStrategy.cs" />
     <Compile Include="BsonSerializationStrategy.cs" />

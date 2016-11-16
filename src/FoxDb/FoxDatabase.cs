@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using FoxDb.Transactions;
 
 namespace FoxDb
 {
@@ -32,7 +33,7 @@ namespace FoxDb
             throw new NotImplementedException();
         }
 
-        void ITransactionSource.Process(IList<ITransactionAction> actions)
+        void ITransactionSource.Apply(IList<ITransactionCommand> actions)
         {
             throw new NotImplementedException();
         }

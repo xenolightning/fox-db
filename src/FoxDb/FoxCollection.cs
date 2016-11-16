@@ -9,18 +9,10 @@ namespace FoxDb
     internal sealed class FoxCollection<T> : IFoxCollection<T>
         where T : class
     {
-        private readonly IFoxTransaction _transaction;
         private readonly List<T> _items;
 
-        public Expression Expression => _items.AsQueryable().Expression;
-
-        public Type ElementType => typeof(T);
-
-        public IQueryProvider Provider => _items.AsQueryable().Provider;
-
-        public FoxCollection(IFoxTransaction transaction)
+        public FoxCollection()
         {
-            _transaction = transaction;
             _items = new List<T>();
         }
 
@@ -28,15 +20,6 @@ namespace FoxDb
         {
             foreach (var item in _items)
                 yield return item;
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-        public void Truncate()
-        {
-            _items.Clear();
         }
 
         public void Insert(T data)

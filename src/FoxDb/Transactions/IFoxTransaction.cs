@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
 
-namespace FoxDb
+namespace FoxDb.Transactions
 {
     public interface IFoxTransaction
     {
+
+        Guid TransactionId { get; }
 
         IFoxCollection GetCollection(string name);
 
@@ -20,5 +22,10 @@ namespace FoxDb
     internal class FoxTransaction : IFoxTransaction, ITransactionSource
     {
         private readonly ITransactionSource _transactionSource;
+
+        public FoxTransaction(ITransactionSource transactionSource)
+        {
+            _transactionSource = transactionSource;
+        }
     }
 }

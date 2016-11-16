@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using FoxDb.Transactions;
 
 namespace FoxDb
 {
@@ -8,18 +9,7 @@ namespace FoxDb
 
         IFoxCollection<T> GetCollection<T>(string name) where T : class;
 
-        void Process(IList<ITransactionAction> actions);
+        void Apply(IList<ITransactionCommand> actions);
 
-    }
-
-    internal interface ITransactionAction
-    {
-
-    }
-
-    internal interface ITransactionAction<T> : ITransactionAction
-        where T : class
-    {
-        void Apply(IFoxCollection<T> collection);
     }
 }
