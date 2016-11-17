@@ -13,7 +13,7 @@ namespace FoxDb.Tests
         [Fact]
         public void Collection_Creates_Transaction()
         {
-            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            var collection = new DocumentCollection<int>(NullSerializationStrategy.Default);
 
             var tran = collection.BeginTransaction();
 
@@ -25,7 +25,7 @@ namespace FoxDb.Tests
         [Fact]
         public void Collection_In_Using_Block_Creates_Transaction()
         {
-            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            var collection = new DocumentCollection<int>(NullSerializationStrategy.Default);
             IFoxTransaction<int> tran;
 
             using (tran = collection.BeginTransaction())
@@ -41,7 +41,7 @@ namespace FoxDb.Tests
         [Fact]
         public void Transaction_Dispose_Aborts_Uncommited()
         {
-            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            var collection = new DocumentCollection<int>(NullSerializationStrategy.Default);
             IFoxTransaction<int> tran;
 
             using (tran = collection.BeginTransaction())
@@ -57,7 +57,7 @@ namespace FoxDb.Tests
         [Fact]
         public void Transaction_Dispose_After_Commit()
         {
-            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            var collection = new DocumentCollection<int>(NullSerializationStrategy.Default);
             IFoxTransaction<int> tran;
 
             using (tran = collection.BeginTransaction())
@@ -74,7 +74,7 @@ namespace FoxDb.Tests
         [Fact]
         public void Transaction_Can_Commit()
         {
-            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            var collection = new DocumentCollection<int>(NullSerializationStrategy.Default);
 
             var tran = collection.BeginTransaction();
 
@@ -84,7 +84,7 @@ namespace FoxDb.Tests
         [Fact]
         public void Transaction_Commit_Changes_State()
         {
-            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            var collection = new DocumentCollection<int>(NullSerializationStrategy.Default);
 
             var tran = collection.BeginTransaction();
 
@@ -96,7 +96,7 @@ namespace FoxDb.Tests
         [Fact]
         public void Transaction_With_Operations_Can_Commit()
         {
-            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            var collection = new DocumentCollection<int>(NullSerializationStrategy.Default);
 
             var tran = collection.BeginTransaction();
 
@@ -110,7 +110,7 @@ namespace FoxDb.Tests
         [Fact]
         public void Transaction_In_Using_Block_Commits()
         {
-            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            var collection = new DocumentCollection<int>(NullSerializationStrategy.Default);
 
             IFoxTransaction<int> tran;
 
@@ -126,7 +126,7 @@ namespace FoxDb.Tests
         [Fact]
         public void Transaction_Rollback_Changes_State_To_Aborted()
         {
-            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            var collection = new DocumentCollection<int>(NullSerializationStrategy.Default);
 
             var tran = collection.BeginTransaction();
 
@@ -141,7 +141,7 @@ namespace FoxDb.Tests
         [Fact]
         public void Transaction_Failed_Commit_Sets_State_To_Aborted()
         {
-            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            var collection = new DocumentCollection<int>(NullSerializationStrategy.Default);
 
             var tran = collection.BeginTransaction();
             try
@@ -161,7 +161,7 @@ namespace FoxDb.Tests
         [Fact]
         public void Transaction_Rollback_Sets_State_To_Aborted_Clears_Active_Transaction()
         {
-            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            var collection = new DocumentCollection<int>(NullSerializationStrategy.Default);
 
             var tran = collection.BeginTransaction();
 
@@ -174,7 +174,7 @@ namespace FoxDb.Tests
         [Fact]
         public void Transaction_Rollback_Cannot_Commit()
         {
-            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            var collection = new DocumentCollection<int>(NullSerializationStrategy.Default);
 
             var tran = collection.BeginTransaction();
 
@@ -188,7 +188,7 @@ namespace FoxDb.Tests
         [Fact]
         public void Transaction_Rollback_Can_Rollback()
         {
-            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            var collection = new DocumentCollection<int>(NullSerializationStrategy.Default);
 
             var tran = collection.BeginTransaction();
 
@@ -202,7 +202,7 @@ namespace FoxDb.Tests
         [Fact]
         public void Transaction_Insertion_On_Commit()
         {
-            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            var collection = new DocumentCollection<int>(NullSerializationStrategy.Default);
 
             using (var tran = collection.BeginTransaction())
             {
@@ -225,7 +225,7 @@ namespace FoxDb.Tests
         [Fact]
         public void Transaction_Insertion_On_Commit_Contains_Keys()
         {
-            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            var collection = new DocumentCollection<int>(NullSerializationStrategy.Default);
             var keys = new List<string>();
 
             using (var tran = collection.BeginTransaction())
@@ -243,7 +243,7 @@ namespace FoxDb.Tests
         [Fact]
         public void Transaction_Cannot_Have_Nested_Transaction()
         {
-            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            var collection = new DocumentCollection<int>(NullSerializationStrategy.Default);
 
             collection.BeginTransaction();
 
@@ -254,7 +254,7 @@ namespace FoxDb.Tests
         public void Transaction_Can_Update_Record()
         {
 
-            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            var collection = new DocumentCollection<int>(NullSerializationStrategy.Default);
             string itemKey;
 
             using (var tran = collection.BeginTransaction())
@@ -273,7 +273,7 @@ namespace FoxDb.Tests
         public void Transaction_Can_Update_Record_Multi_Transaction()
         {
 
-            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            var collection = new DocumentCollection<int>(NullSerializationStrategy.Default);
             string itemKey;
 
             using (var tran = collection.BeginTransaction())
@@ -299,7 +299,7 @@ namespace FoxDb.Tests
         public void Transaction_Can_Delete_Record()
         {
 
-            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            var collection = new DocumentCollection<int>(NullSerializationStrategy.Default);
             string itemKey;
 
             using (var tran = collection.BeginTransaction())
@@ -316,7 +316,7 @@ namespace FoxDb.Tests
         public void Transaction_Can_Delete_Record_Multi_Tran()
         {
 
-            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            var collection = new DocumentCollection<int>(NullSerializationStrategy.Default);
             string itemKey;
 
             using (var tran = collection.BeginTransaction())
@@ -343,7 +343,7 @@ namespace FoxDb.Tests
         public void Transaction_Delete_Non_Existent_Item_Throws()
         {
 
-            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            var collection = new DocumentCollection<int>(NullSerializationStrategy.Default);
 
             var tran = collection.BeginTransaction();
 

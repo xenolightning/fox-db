@@ -28,8 +28,23 @@ namespace FoxDb
             return _collectionIndex.ContainsKey(name) && _collectionIndex[name] == typeof(T);
         }
 
-        IFoxCollection<T> ITransactionSource.GetCollection<T>(string name)
-        { 
+        bool ITransactionSource.CollectionExists<TKey, TValue>(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        IFoxCollection ITransactionSource.GetCollection(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        IDocumentCollection<T> ITransactionSource.GetCollection<T>(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        IKeyValueCollection<TKey, TValue> ITransactionSource.GetCollection<TKey, TValue>(string name)
+        {
             throw new NotImplementedException();
         }
 

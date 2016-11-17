@@ -40,10 +40,11 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="FileSystemStore.cs" />
     <Compile Include="CompressedDataStore.cs" />
-    <Compile Include="FoxCollection.cs" />
+    <Compile Include="DocumentCollection.cs" />
     <Compile Include="FoxDatabase.cs" />
     <Compile Include="IDataStore.cs" />
-    <Compile Include="IFoxCollection.cs" />
+    <Compile Include="IDocumentCollection.cs" />
+    <Compile Include="StreamingDocumentCollection.cs" />
     <Compile Include="Transactions\UpdateDocumentCommand.cs" />
     <Compile Include="Transactions\ITransactionCommand.cs" />
     <Compile Include="Transactions\InsertDocumentCommand.cs" />

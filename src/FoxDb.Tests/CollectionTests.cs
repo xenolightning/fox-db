@@ -11,7 +11,7 @@ namespace FoxDb.Tests
         [Fact]
         public void Collection_Insert_Increases_Count()
         {
-            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            var collection = new DocumentCollection<int>(NullSerializationStrategy.Default);
 
             using (var tran = collection.BeginTransaction())
             {
@@ -28,7 +28,7 @@ namespace FoxDb.Tests
         [Fact]
         public void Collection_Insert_Increases_Adds_A_Value()
         {
-            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            var collection = new DocumentCollection<int>(NullSerializationStrategy.Default);
 
             using (var tran = collection.BeginTransaction())
             {
@@ -46,7 +46,7 @@ namespace FoxDb.Tests
         [Fact]
         public void Collection_Delete_Decreases_Count()
         {
-            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            var collection = new DocumentCollection<int>(NullSerializationStrategy.Default);
 
             using (var tran = collection.BeginTransaction())
             {
@@ -70,7 +70,7 @@ namespace FoxDb.Tests
         [Fact]
         public void Collection_Is_Not_ReadOnly()
         {
-            var collection = new FoxCollection<int>(NullSerializationStrategy.Default);
+            var collection = new DocumentCollection<int>(NullSerializationStrategy.Default);
 
             Assert.False(collection.IsReadOnly);
         }
@@ -78,7 +78,7 @@ namespace FoxDb.Tests
         [Fact]
         public void Collection_As_Enumerable()
         {
-            var collection = new FoxCollection<int>(NullSerializationStrategy.Default) as IEnumerable;
+            var collection = new DocumentCollection<int>(NullSerializationStrategy.Default) as IEnumerable;
 
             Assert.NotNull(collection);
 

@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace FoxDb.Transactions
 {
-    internal class InsertDocumentCommand<T> : ITransactionCommand<T>
+    internal class InsertDocumentCommand<T> : IDocumentCommand<T>
         where T : class
     {
         private string _collectionName;

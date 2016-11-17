@@ -4,18 +4,18 @@ using Newtonsoft.Json;
 
 namespace FoxDb.Transactions
 {
-    internal class UpdateDocumentCommand<T> : ITransactionCommand<T>
+    internal class UpdateDocumentCommand<T> : IDocumentCommand<T>
         where T : class
     {
         private string _collectionName;
-        private readonly Expression<Func<T, bool>> _filterExpression;
+        private readonly Expression<Func<T, bool>> _filter;
         private Type _itemType;
         private string _itemData;
 
-        public UpdateDocumentCommand(string collectionName, T item, Expression<Func<T, bool>> filterExpression)
+        public UpdateDocumentCommand(string collectionName, T item, Expression<Func<T, bool>> filter)
         {
             _collectionName = collectionName;
-            _filterExpression = filterExpression;
+            _filter = filter;
             _itemType = typeof(T);
             _itemData = JsonConvert.SerializeObject(item);
 
